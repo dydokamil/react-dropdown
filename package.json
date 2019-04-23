@@ -1,0 +1,41 @@
+{
+  "name": "react-dropdown-overflow",
+  "version": "1.4.0",
+  "description": "A react dropdown that pops outside of the overflown parent container",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "babel ./src --out-dir ./dist -s inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:dydokamil/react-dropdown-overflow.git"
+  },
+  "author": "Kamil Dydo",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "react": "^16.8.0"
+  },
+  "keywords": [
+    "react-dropdown",
+    "menu",
+    "dropdown",
+    "react-menu",
+    "overflow",
+    "react",
+    "react-component",
+    "react",
+    "webpack",
+    "npm"
+  ],
+  "peerDependencies": {
+    "react": "^16.8.0"
+  },
+  "files": [
+    "dist/*"
+  ]
+}
