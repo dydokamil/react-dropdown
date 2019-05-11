@@ -22,10 +22,11 @@ export default function({
   dropdownWrapperId,
   isDropdownCentered,
   zIndex,
+  hasClickOutsideListener,
 }) {
   if (mode !== "hover" && mode !== "click") {
     console.error(
-      "Use one of ['hover', 'click'] for mode prop. Defaulting to hover."
+      "Use one of ['hover', 'click'] for mode prop. Defaulting to hover.",
     );
     mode = "hover";
   }
@@ -35,6 +36,19 @@ export default function({
 
   const refContainer = useRef();
   const refDropdown = useRef();
+
+  function outsideClickListener(event) {
+    if (refContainer.current && !refContainer.current.contains(event.target)) {
+      setIsDropdownShown(false);
+    }
+  }
+
+  useEffect(() => {
+    if (hasClickOutsideListener) {
+      document.addEventListener("click", outsideClickListener);
+    }
+    return () => document.removeEventListener("click", outsideClickListener);
+  }, []);
 
   function calculatePosition() {
     let { left, top, width, height } =
@@ -49,7 +63,7 @@ export default function({
       left,
       top,
       width: refDropdown && refDropdown.current.getBoundingClientRect().width,
-      height: refDropdown && refDropdown.current.getBoundingClientRect().height
+      height: refDropdown && refDropdown.current.getBoundingClientRect().height,
     });
 
     setPosition({ left: clamped.left, top: clamped.top + height });
@@ -61,16 +75,12 @@ export default function({
   }
 
   function toggleDropdown(event) {
-    if(mode === 'click') {
-      if(event.target === refContainer.current) {
+    if (!refDropdown.current.contains(event.target)) {
+      if (isDropdownShown) {
         setIsDropdownShown(false);
+      } else {
+        calculatePositionThenShow();
       }
-      return;
-    }
-    if (isDropdownShown) {
-      setIsDropdownShown(false);
-    } else {
-      calculatePositionThenShow();
     }
   }
 
@@ -95,7 +105,10 @@ export default function({
         mode === "hover" ? setIsDropdownShown(false) : () => {}
       }
       onClick={mode === "click" ? toggleDropdown : () => {}}
-      style={{ height: "min-content", width: "min-content" }}
+      style={{
+        height: "min-content",
+        width: "min-content",
+      }}
     >
       {children}
       <div
@@ -108,7 +121,7 @@ export default function({
           top: position.top,
           left: position.left,
           zIndex,
-          display: 'flex',
+          display: "flex",
         }}
       >
         {dropdown}

@@ -1,6 +1,6 @@
 {
   "name": "react-dropdown-overflow",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "A react dropdown that pops outside of the overflown parent container",
   "main": "dist/index.js",
   "scripts": {
