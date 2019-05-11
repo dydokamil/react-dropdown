@@ -58,11 +58,11 @@ A React component to be displayed as a dropdown.
 
 ---
 
-##### `isDropdownCentered`
+##### `positioning`
 
-A boolean prop responsible for the centering of the menu. Valid values are:
+A string prop responsible for the positioning of the menu. Valid values are:
 
-`true | false` :: Whether the dropdown menu is centered.
+`left | center | right` :: The position of the dropdown menu.
 
 ---
 

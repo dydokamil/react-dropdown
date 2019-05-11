@@ -23,12 +23,19 @@ export default function({
   isDropdownCentered,
   zIndex,
   hasClickOutsideListener,
+  positioning = isDropdownCentered ? "center" : "left",
 }) {
   if (mode !== "hover" && mode !== "click") {
     console.error(
       "Use one of ['hover', 'click'] for mode prop. Defaulting to hover.",
     );
     mode = "hover";
+  }
+
+  if (isDropdownCentered) {
+    console.warn(
+      "`isDropdownCentered` is deprecated. Use `positioning` set to `center` instead.",
+    );
   }
 
   const [position, setPosition] = useState({ left: 0, top: 0 });
@@ -54,9 +61,19 @@ export default function({
     let { left, top, width, height } =
       refContainer && refContainer.current.getBoundingClientRect();
 
-    if (isDropdownCentered) {
-      left += width / 2;
-      left -= refDropdown.current.getBoundingClientRect().width / 2;
+    switch (positioning) {
+      case "center":
+        left += width / 2;
+        left -= refDropdown.current.getBoundingClientRect().width / 2;
+        break;
+      case "left":
+        break;
+      case "right":
+        left += width;
+        left -= refDropdown.current.getBoundingClientRect().width;
+        break;
+      default:
+        throw new Error("Unknown positioning " + positioning);
     }
 
     const clamped = clamp({
