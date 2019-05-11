@@ -20,7 +20,8 @@ export default function({
   wrapperId,
   dropdownWrapperClass,
   dropdownWrapperId,
-  isDropdownCentered
+  isDropdownCentered,
+  zIndex,
 }) {
   if (mode !== "hover" && mode !== "click") {
     console.error(
@@ -99,7 +100,9 @@ export default function({
           visibility: isDropdownShown ? "visible" : "hidden",
           position: "fixed",
           top: position.top,
-          left: position.left
+          left: position.left,
+          zIndex,
+          display: 'flex',
         }}
       >
         {dropdown}
