@@ -60,7 +60,13 @@ export default function({
     setIsDropdownShown(true);
   }
 
-  function toggleDropdown() {
+  function toggleDropdown(event) {
+    if(mode === 'click') {
+      if(event.target === refContainer.current) {
+        setIsDropdownShown(false);
+      }
+      return;
+    }
     if (isDropdownShown) {
       setIsDropdownShown(false);
     } else {
@@ -89,7 +95,7 @@ export default function({
         mode === "hover" ? setIsDropdownShown(false) : () => {}
       }
       onClick={mode === "click" ? toggleDropdown : () => {}}
-      style={{ height: "fit-content", width: "fit-content" }}
+      style={{ height: "min-content", width: "min-content" }}
     >
       {children}
       <div
