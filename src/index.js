@@ -52,9 +52,9 @@ export default function({
 
   useEffect(() => {
     if (hasClickOutsideListener) {
-      document.addEventListener("click", outsideClickListener);
+      window.addEventListener("click", outsideClickListener);
     }
-    return () => document.removeEventListener("click", outsideClickListener);
+    return () => window.removeEventListener("click", outsideClickListener);
   }, []);
 
   function calculatePosition() {
