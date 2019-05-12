@@ -72,7 +72,7 @@ A number specifying the z-index of the dropdown. Valid values are numbers.
 
 ---
 
-##### `hasOutsideClickListener`
+##### `hasClickOutsideListener`
 
 A boolean prop specifying whether the dropdown should be closed when the mouse event is located outside of the entire component. Useful with `click` mode.
 
