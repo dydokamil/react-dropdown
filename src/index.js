@@ -26,10 +26,11 @@ function Dropdown({
   dropdownWrapperClass,
   dropdownWrapperId,
   isDropdownCentered,
-  zIndex,
+  zIndex = 'auto',
   hasClickOutsideListener,
   positioning = isDropdownCentered ? 'center' : 'left',
   isOpen,
+  triggerKeys = ['Enter'],
 }) {
   IS_CONTROLLED = !(typeof isOpen === 'undefined' || isOpen === null);
   let modeCopy = mode;
@@ -124,6 +125,12 @@ function Dropdown({
     }
   }
 
+  function onKeyDown(event) {
+    if (triggerKeys.includes(event.key)) {
+      toggleDropdown(event);
+    }
+  }
+
   useEffect(() => {
     if (isDropdownShown) {
       window.addEventListener('scroll', calculatePosition);
@@ -140,7 +147,7 @@ function Dropdown({
       className={wrapperClass}
       tabIndex={0}
       role="button"
-      onKeyDown={event => event.key === 'Enter' && toggleDropdown(event)}
+      onKeyDown={onKeyDown}
       id={wrapperId}
       ref={refContainer}
       onMouseEnter={modeCopy === 'hover' ? calculatePositionThenShow : () => {}}
@@ -185,6 +192,7 @@ Dropdown.propTypes = {
   hasClickOutsideListener: PropTypes.bool,
   positioning: PropTypes.oneOf(['left', 'center', 'right']),
   isOpen: PropTypes.bool,
+  triggerKeys: PropTypes.arrayOf(PropTypes.string),
 };
 
 Dropdown.defaultProps = {
@@ -200,6 +208,7 @@ Dropdown.defaultProps = {
   hasClickOutsideListener: false,
   positioning: 'left',
   isOpen: null,
+  triggerKeys: ['Enter'],
 };
 
 export default Dropdown;
