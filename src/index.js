@@ -49,7 +49,6 @@ export default function({
   const refDropdown = useRef();
 
   function setIsDropdownShown(val) {
-      console.log(val, IS_CONTROLLED);
     if (!IS_CONTROLLED) {
       _setIsDropdownShown(val);
     }
