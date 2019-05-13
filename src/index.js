@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-let IS_CONTROLLED = false;
-
 const clamp = ({ left, top, width /* ,height */ }) => {
   let leftCopy = left;
 
@@ -32,7 +30,7 @@ function Dropdown({
   isOpen,
   triggerKeys = ['Enter'],
 }) {
-  IS_CONTROLLED = !(typeof isOpen === 'undefined' || isOpen === null);
+  const IS_CONTROLLED = !(typeof isOpen === 'undefined' || isOpen === null);
   let modeCopy = mode;
 
   if (mode !== 'hover' && mode !== 'click') {
@@ -126,9 +124,43 @@ function Dropdown({
   }
 
   function onKeyDown(event) {
+    if (IS_CONTROLLED) {
+      return null;
+    }
     if (triggerKeys.includes(event.key)) {
       toggleDropdown(event);
     }
+    return null;
+  }
+
+  function onMouseEnter() {
+    if (IS_CONTROLLED) {
+      return null;
+    }
+    if (modeCopy === 'hover') {
+      calculatePositionThenShow();
+    }
+    return null;
+  }
+
+  function onMouseLeave() {
+    if (IS_CONTROLLED) {
+      return null;
+    }
+    if (modeCopy === 'hover') {
+      setIsDropdownShown(false);
+    }
+    return null;
+  }
+
+  function onClick(event) {
+    if (IS_CONTROLLED) {
+      return null;
+    }
+    if (modeCopy === 'click') {
+      toggleDropdown(event);
+    }
+    return null;
   }
 
   useEffect(() => {
@@ -145,15 +177,14 @@ function Dropdown({
   return (
     <div
       className={wrapperClass}
-      tabIndex={0}
-      role="button"
+      tabIndex={IS_CONTROLLED ? null : 0}
+      role={IS_CONTROLLED ? null : 'button'}
       onKeyDown={onKeyDown}
       id={wrapperId}
       ref={refContainer}
-      onMouseEnter={modeCopy === 'hover' ? calculatePositionThenShow : () => {}}
-      onMouseLeave={() => (modeCopy === 'hover' ? setIsDropdownShown(false) : () => {})
-      }
-      onClick={modeCopy === 'click' ? toggleDropdown : () => {}}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onClick={onClick}
       style={{
         height: 'min-content',
         width: 'min-content',
