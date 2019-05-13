@@ -109,3 +109,11 @@ A boolean prop responsible for the state of the component (closed/open). Valid v
 `true | false` :: The position of the dropdown menu.
 
 **WARNING**: This changes the component from an uncontrolled to a controlled one.
+
+---
+
+##### `triggerKeys`
+
+Array of key names that trigger the dropdown menu. 
+
+Default: ['Enter']
