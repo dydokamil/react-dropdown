@@ -99,3 +99,13 @@ Class name of the newly created element wrapping the dropdown.
 ##### `dropdownWrapperId`
 
 `id` of the newly created element wrapping the dropdown.
+
+---
+
+##### `isOpen`
+
+A boolean prop responsible for the state of the component (closed/open). Valid values are:
+
+`true | false` :: The position of the dropdown menu.
+
+**WARNING**: This changes the component from an uncontrolled to a controlled one.
