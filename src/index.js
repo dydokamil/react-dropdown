@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
+let IS_CONTROLLED = false;
+
 const clamp = ({ left, top, width /*,height*/ }) => {
   if (left < 0) {
     left = 0;
@@ -24,7 +26,10 @@ export default function({
   zIndex,
   hasClickOutsideListener,
   positioning = isDropdownCentered ? "center" : "left",
+  isOpen,
 }) {
+  IS_CONTROLLED = !(isOpen === 'undefined' || isOpen === null);
+
   if (mode !== "hover" && mode !== "click") {
     console.error(
       "Use one of ['hover', 'click'] for mode prop. Defaulting to hover.",
@@ -39,10 +44,16 @@ export default function({
   }
 
   const [position, setPosition] = useState({ left: 0, top: 0 });
-  const [isDropdownShown, setIsDropdownShown] = useState(false);
-
+  const [isDropdownShown, _setIsDropdownShown] = useState(IS_CONTROLLED ? isOpen : false);
   const refContainer = useRef();
   const refDropdown = useRef();
+
+  function setIsDropdownShown(val) {
+      console.log(val, IS_CONTROLLED);
+    if (!IS_CONTROLLED) {
+      _setIsDropdownShown(val);
+    }
+  }
 
   function outsideClickListener(event) {
     if (refContainer.current && !refContainer.current.contains(event.target)) {
@@ -51,11 +62,19 @@ export default function({
   }
 
   useEffect(() => {
+    calculatePosition();
+
     if (hasClickOutsideListener) {
       window.addEventListener("click", outsideClickListener);
     }
     return () => window.removeEventListener("click", outsideClickListener);
   }, []);
+
+    useEffect(() => {
+      if(IS_CONTROLLED) {
+      _setIsDropdownShown(isOpen);
+      }
+    }, [isOpen]);
 
   function calculatePosition() {
     let { left, top, width, height } =
