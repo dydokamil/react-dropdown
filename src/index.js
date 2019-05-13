@@ -1,21 +1,24 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 let IS_CONTROLLED = false;
 
-const clamp = ({ left, top, width /*,height*/ }) => {
-  if (left < 0) {
-    left = 0;
+const clamp = ({ left, top, width /* ,height */ }) => {
+  let leftCopy = left;
+
+  if (leftCopy < 0) {
+    leftCopy = 0;
   } else if (left + width > document.documentElement.clientWidth) {
-    left = document.documentElement.clientWidth - width;
+    leftCopy = document.documentElement.clientWidth - width;
   }
 
   // TODO clamp top based on a prop
 
-  return { left, top };
+  return { left: leftCopy, top };
 };
 
-export default function({
-  mode = "hover",
+function Dropdown({
+  mode = 'hover',
   children,
   dropdown,
   wrapperClass,
@@ -25,21 +28,22 @@ export default function({
   isDropdownCentered,
   zIndex,
   hasClickOutsideListener,
-  positioning = isDropdownCentered ? "center" : "left",
+  positioning = isDropdownCentered ? 'center' : 'left',
   isOpen,
 }) {
-  IS_CONTROLLED = !(isOpen === 'undefined' || isOpen === null);
+  IS_CONTROLLED = !(typeof isOpen === 'undefined' || isOpen === null);
+  let modeCopy = mode;
 
-  if (mode !== "hover" && mode !== "click") {
+  if (mode !== 'hover' && mode !== 'click') {
     console.error(
       "Use one of ['hover', 'click'] for mode prop. Defaulting to hover.",
     );
-    mode = "hover";
+    modeCopy = 'hover';
   }
 
   if (isDropdownCentered) {
     console.warn(
-      "`isDropdownCentered` is deprecated. Use `positioning` set to `center` instead.",
+      '`isDropdownCentered` is deprecated. Use `positioning` set to `center` instead.',
     );
   }
 
@@ -60,38 +64,24 @@ export default function({
     }
   }
 
-  useEffect(() => {
-    calculatePosition();
-
-    if (hasClickOutsideListener) {
-      window.addEventListener("click", outsideClickListener);
-    }
-    return () => window.removeEventListener("click", outsideClickListener);
-  }, []);
-
-    useEffect(() => {
-      if(IS_CONTROLLED) {
-      _setIsDropdownShown(isOpen);
-      }
-    }, [isOpen]);
-
   function calculatePosition() {
-    let { left, top, width, height } =
-      refContainer && refContainer.current.getBoundingClientRect();
+    const dropdownPosition = refContainer && refContainer.current.getBoundingClientRect();
+    let { left } = dropdownPosition;
+    const { top, width, height } = dropdownPosition;
 
     switch (positioning) {
-      case "center":
+      case 'center':
         left += width / 2;
         left -= refDropdown.current.getBoundingClientRect().width / 2;
         break;
-      case "left":
+      case 'left':
         break;
-      case "right":
+      case 'right':
         left += width;
         left -= refDropdown.current.getBoundingClientRect().width;
         break;
       default:
-        throw new Error("Unknown positioning " + positioning);
+        throw new Error(`Unknown positioning ${positioning}`);
     }
 
     const clamped = clamp({
@@ -103,6 +93,21 @@ export default function({
 
     setPosition({ left: clamped.left, top: clamped.top + height });
   }
+
+  useEffect(() => {
+    calculatePosition();
+
+    if (hasClickOutsideListener) {
+      window.addEventListener('click', outsideClickListener);
+    }
+    return () => window.removeEventListener('click', outsideClickListener);
+  }, []);
+
+  useEffect(() => {
+    if (IS_CONTROLLED) {
+      _setIsDropdownShown(isOpen);
+    }
+  }, [isOpen]);
 
   function calculatePositionThenShow() {
     calculatePosition();
@@ -121,28 +126,30 @@ export default function({
 
   useEffect(() => {
     if (isDropdownShown) {
-      window.addEventListener("scroll", calculatePosition);
-      window.addEventListener("resize", calculatePosition);
+      window.addEventListener('scroll', calculatePosition);
+      window.addEventListener('resize', calculatePosition);
     }
     return () => {
-      window.removeEventListener("scroll", calculatePosition);
-      window.removeEventListener("resize", calculatePosition);
+      window.removeEventListener('scroll', calculatePosition);
+      window.removeEventListener('resize', calculatePosition);
     };
   }, [isDropdownShown]);
 
   return (
     <div
       className={wrapperClass}
+      tabIndex={0}
+      role="button"
+      onKeyDown={event => event.key === 'Enter' && toggleDropdown(event)}
       id={wrapperId}
       ref={refContainer}
-      onMouseEnter={mode === "hover" ? calculatePositionThenShow : () => {}}
-      onMouseLeave={() =>
-        mode === "hover" ? setIsDropdownShown(false) : () => {}
+      onMouseEnter={modeCopy === 'hover' ? calculatePositionThenShow : () => {}}
+      onMouseLeave={() => (modeCopy === 'hover' ? setIsDropdownShown(false) : () => {})
       }
-      onClick={mode === "click" ? toggleDropdown : () => {}}
+      onClick={modeCopy === 'click' ? toggleDropdown : () => {}}
       style={{
-        height: "min-content",
-        width: "min-content",
+        height: 'min-content',
+        width: 'min-content',
       }}
     >
       {children}
@@ -151,12 +158,12 @@ export default function({
         id={dropdownWrapperId}
         ref={refDropdown}
         style={{
-          visibility: isDropdownShown ? "visible" : "hidden",
-          position: "fixed",
+          visibility: isDropdownShown ? 'visible' : 'hidden',
+          position: 'fixed',
           top: position.top,
           left: position.left,
           zIndex,
-          display: "flex",
+          display: 'flex',
         }}
       >
         {dropdown}
@@ -164,3 +171,35 @@ export default function({
     </div>
   );
 }
+
+Dropdown.propTypes = {
+  mode: PropTypes.string,
+  children: PropTypes.node,
+  dropdown: PropTypes.node,
+  wrapperClass: PropTypes.string,
+  wrapperId: PropTypes.string,
+  dropdownWrapperClass: PropTypes.string,
+  dropdownWrapperId: PropTypes.string,
+  isDropdownCentered: PropTypes.bool,
+  zIndex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  hasClickOutsideListener: PropTypes.bool,
+  positioning: PropTypes.oneOf(['left', 'center', 'right']),
+  isOpen: PropTypes.bool,
+};
+
+Dropdown.defaultProps = {
+  mode: 'hover',
+  children: null,
+  dropdown: null,
+  wrapperClass: null,
+  wrapperId: null,
+  dropdownWrapperClass: null,
+  dropdownWrapperId: null,
+  isDropdownCentered: null,
+  zIndex: 'auto',
+  hasClickOutsideListener: false,
+  positioning: 'left',
+  isOpen: null,
+};
+
+export default Dropdown;
