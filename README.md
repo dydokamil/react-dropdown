@@ -106,6 +106,6 @@ Class name of the newly created element wrapping the dropdown.
 
 A boolean prop responsible for the state of the component (closed/open). Valid values are:
 
-`true | false` :: The position of the dropdown menu.
+`true | false` :: Whether the menu is visible.
 
 **WARNING**: This changes the component from an uncontrolled to a controlled one.
