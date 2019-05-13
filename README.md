@@ -116,4 +116,4 @@ A boolean prop responsible for the state of the component (closed/open). Valid v
 
 Array of key names that trigger the dropdown menu. 
 
-Default: ['Enter']
+Default: `['Enter']`
