@@ -103,6 +103,12 @@ function Dropdown({
   }, []);
 
   useEffect(() => {
+    if(isOpen) {
+      calculatePosition();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (IS_CONTROLLED) {
       _setIsDropdownShown(isOpen);
     }
