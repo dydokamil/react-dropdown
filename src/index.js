@@ -103,6 +103,12 @@ function Dropdown({
   }, []);
 
   useEffect(() => {
+    if(isOpen) {
+      calculatePosition();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (IS_CONTROLLED) {
       _setIsDropdownShown(isOpen);
     }
@@ -185,10 +191,6 @@ function Dropdown({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
-      style={{
-        height: 'min-content',
-        width: 'min-content',
-      }}
     >
       {children}
       <div
