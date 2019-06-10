@@ -29,6 +29,7 @@ function Dropdown({
   positioning = isDropdownCentered ? 'center' : 'left',
   isOpen,
   triggerKeys = ['Enter'],
+  ...props
 }) {
   const IS_CONTROLLED = !(typeof isOpen === 'undefined' || isOpen === null);
   let modeCopy = mode;
@@ -191,6 +192,7 @@ function Dropdown({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
+      {...props}
     >
       {children}
       <div
