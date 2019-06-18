@@ -194,22 +194,26 @@ function Dropdown({
       onClick={onClick}
       {...props}
     >
-      {children}
-      <div
-        className={dropdownWrapperClass}
-        id={dropdownWrapperId}
-        ref={refDropdown}
-        style={{
-          visibility: isDropdownShown ? 'visible' : 'hidden',
-          position: 'fixed',
-          top: position.top,
-          left: position.left,
-          zIndex,
-          display: 'flex',
-        }}
-      >
-        {dropdown}
-      </div>
+      {isOpen && (
+        <>
+          {children}
+          <div
+            className={dropdownWrapperClass}
+            id={dropdownWrapperId}
+            ref={refDropdown}
+            style={{
+              visibility: isDropdownShown ? 'visible' : 'hidden',
+              position: 'fixed',
+              top: position.top,
+              left: position.left,
+              zIndex,
+              display: 'flex',
+            }}
+          >
+            {dropdown}
+          </div>
+        </>
+      )}
     </div>
   );
 }
