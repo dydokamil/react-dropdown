@@ -117,10 +117,15 @@ function Dropdown({
 
   useEffect(() => {
     if (shouldRenderContent) {
-      calculatePositionAndSetState();
+      const position = calculatePosition(
+        refContainer,
+        refDropdown,
+        positioning,
+      );
+      setPosition(position);
       setIsDropdownShown(true);
     }
-  }, [calculatePositionAndSetState, shouldRenderContent]);
+  }, [positioning, shouldRenderContent]);
 
   useEffect(() => {
     function outsideClickListener(event) {
