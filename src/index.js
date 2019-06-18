@@ -69,19 +69,21 @@ function Dropdown({
     let { left } = dropdownPosition;
     const { top, width, height } = dropdownPosition;
 
-    switch (positioning) {
-      case 'center':
-        left += width / 2;
-        left -= refDropdown.current.getBoundingClientRect().width / 2;
-        break;
-      case 'left':
-        break;
-      case 'right':
-        left += width;
-        left -= refDropdown.current.getBoundingClientRect().width;
-        break;
-      default:
-        throw new Error(`Unknown positioning ${positioning}`);
+    if(refDropdown) {
+      switch (positioning) {
+        case 'center':
+          left += width / 2;
+          left -= refDropdown.current.getBoundingClientRect().width / 2;
+          break;
+        case 'left':
+          break;
+        case 'right':
+          left += width;
+          left -= refDropdown.current.getBoundingClientRect().width;
+          break;
+        default:
+          throw new Error(`Unknown positioning ${positioning}`);
+      }
     }
 
     const clamped = clamp({
