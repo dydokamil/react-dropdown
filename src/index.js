@@ -104,10 +104,10 @@ function Dropdown({
   }, []);
 
   useEffect(() => {
-    if(isOpen) {
+    if(isOpen || isDropdownShown) {
       calculatePosition();
     }
-  }, [isOpen]);
+  }, [isOpen, isDropdownShown]);
 
   useEffect(() => {
     if (IS_CONTROLLED) {
@@ -194,26 +194,22 @@ function Dropdown({
       onClick={onClick}
       {...props}
     >
-      {isOpen && (
-        <>
-          {children}
-          <div
-            className={dropdownWrapperClass}
-            id={dropdownWrapperId}
-            ref={refDropdown}
-            style={{
-              visibility: isDropdownShown ? 'visible' : 'hidden',
-              position: 'fixed',
-              top: position.top,
-              left: position.left,
-              zIndex,
-              display: 'flex',
-            }}
-          >
-            {dropdown}
-          </div>
-        </>
-      )}
+      {children}
+      <div
+        className={dropdownWrapperClass}
+        id={dropdownWrapperId}
+        ref={refDropdown}
+        style={{
+          visibility: isDropdownShown ? 'visible' : 'hidden',
+          position: 'fixed',
+          top: position.top,
+          left: position.left,
+          zIndex,
+          display: 'flex',
+        }}
+      >
+        {(isOpen || isDropdownShown) ? dropdown : null}
+      </div>
     </div>
   );
 }
