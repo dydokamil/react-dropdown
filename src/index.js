@@ -104,10 +104,10 @@ function Dropdown({
   }, []);
 
   useEffect(() => {
-    if(isOpen) {
+    if(isOpen || isDropdownShown) {
       calculatePosition();
     }
-  }, [isOpen]);
+  }, [isOpen, isDropdownShown]);
 
   useEffect(() => {
     if (IS_CONTROLLED) {
@@ -208,7 +208,7 @@ function Dropdown({
           display: 'flex',
         }}
       >
-        {dropdown}
+        {(isOpen || isDropdownShown) ? dropdown : null}
       </div>
     </div>
   );
