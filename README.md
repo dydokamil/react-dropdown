@@ -1,8 +1,12 @@
 # Links
 
-demo: https://react-dropdown-overflow.herokuapp.com/
+demo: https://dydokamil.github.io/react-dropdown-example/
 
 example: https://github.com/dydokamil/react-dropdown-example
+
+# Demo
+
+![alt text](https://raw.githubusercontent.com/dydokamil/react-dropdown-example/master/static/dropdown.gif "dropdown demo")
 
 # Installation
 
@@ -109,11 +113,3 @@ A boolean prop responsible for the state of the component (closed/open). Valid v
 `true | false` :: Whether the menu is visible.
 
 **WARNING**: This changes the component from an uncontrolled to a controlled one.
-
----
-
-##### `triggerKeys`
-
-Array of key names that trigger the dropdown menu. 
-
-Default: `['Enter']`

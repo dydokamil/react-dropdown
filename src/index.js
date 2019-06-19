@@ -78,7 +78,7 @@ function Dropdown({
     );
   }
 
-  if (isDropdownCentered) {
+  if (triggerKeys) {
     console.warn(
       "`triggerKeys` is deprecated. All dropdowns are triggered with either Space or Enter keys when focused",
     );
