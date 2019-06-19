@@ -59,7 +59,7 @@ function Dropdown({
   hasClickOutsideListener,
   positioning = isDropdownCentered ? "center" : "left",
   isOpen,
-  triggerKeys = ["Enter"],
+  triggerKeys,
   ...props
 }) {
   const IS_CONTROLLED = !(typeof isOpen === "undefined" || isOpen === null);
@@ -75,6 +75,12 @@ function Dropdown({
   if (isDropdownCentered) {
     console.warn(
       "`isDropdownCentered` is deprecated. Use `positioning` set to `center` instead.",
+    );
+  }
+
+  if (isDropdownCentered) {
+    console.warn(
+      "`triggerKeys` is deprecated. All dropdowns are triggered with either Space or Enter keys when focused",
     );
   }
 
@@ -144,11 +150,13 @@ function Dropdown({
   }, [IS_CONTROLLED, hasClickOutsideListener, positioning]);
 
   function onKeyDown(event) {
+    if (mode === "hover") {
+      if ([" ", "Enter"].includes(event.key)) {
+        setShouldRenderContent(curr => !curr);
+      }
+    }
     if (IS_CONTROLLED) {
       return;
-    }
-    if (triggerKeys.includes(event.key)) {
-      setShouldRenderContent(curr => !curr);
     }
   }
 
@@ -171,12 +179,14 @@ function Dropdown({
     return;
   }
 
-  function onClick() {
+  function onClick(event) {
     if (IS_CONTROLLED) {
       return;
     }
     if (modeCopy === "click") {
-      setShouldRenderContent(curr => !curr);
+      if (!refDropdown.current.contains(event.target)) {
+        setShouldRenderContent(curr => !curr);
+      }
     }
     return;
   }
@@ -227,7 +237,6 @@ Dropdown.propTypes = {
   hasClickOutsideListener: PropTypes.bool,
   positioning: PropTypes.oneOf(["left", "center", "right"]),
   isOpen: PropTypes.bool,
-  triggerKeys: PropTypes.arrayOf(PropTypes.string),
 };
 
 Dropdown.defaultProps = {
@@ -243,7 +252,6 @@ Dropdown.defaultProps = {
   hasClickOutsideListener: false,
   positioning: "left",
   isOpen: null,
-  triggerKeys: ["Enter"],
 };
 
 export default Dropdown;
