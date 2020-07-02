@@ -98,7 +98,7 @@ function Dropdown({
   }
 
   const calculatePositionAndSetState = React.useCallback(() => {
-    if (isDropdownShown) {
+    if (shouldRenderContent) {
       const position = calculatePosition(
         refContainer,
         refDropdown,
