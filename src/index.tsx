@@ -9,13 +9,13 @@ export type Props = {
   children: React.ReactNode;
   className?: string;
   dropdown: React.ReactNode;
-  dropdownWrapperId: string;
+  dropdownWrapperId?: string;
   hasClickOutsideListener?: boolean;
   isOpen?: boolean;
-  mode: Mode;
-  positioning: Positioning;
+  mode?: Mode;
+  positioning?: Positioning;
   wrapperId?: string;
-  zIndex: "auto" | number;
+  zIndex?: "auto" | number;
 };
 
 const clamp = ({ left = 0, top = 0, width = 0 }: Partial<DOMRect>) => {
@@ -72,12 +72,12 @@ function Dropdown({
   children,
   className = "dropdown",
   dropdown,
-  dropdownWrapperId,
+  dropdownWrapperId = undefined,
   hasClickOutsideListener = true,
   isOpen = undefined,
   mode = "hover",
-  positioning = "center",
-  wrapperId,
+  positioning = "left",
+  wrapperId = undefined,
   zIndex = "auto",
   ...props
 }: Props) {
