@@ -1,7 +1,24 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import PropTypes from "prop-types";
+import * as React from "react";
+import "./dropdown.scss";
 
-const clamp = ({ left, top, width /* ,height */ }) => {
+export type Positioning = "center" | "left" | "right";
+
+export type Mode = "hover" | "click";
+
+export type Props = {
+  children: React.ReactNode;
+  className?: string;
+  dropdown: React.ReactNode;
+  dropdownWrapperId: string;
+  hasClickOutsideListener?: boolean;
+  isOpen?: boolean;
+  mode: Mode;
+  positioning: Positioning;
+  wrapperId?: string;
+  zIndex: "auto" | number;
+};
+
+const clamp = ({ left = 0, top = 0, width = 0 }: Partial<DOMRect>) => {
   let leftCopy = left;
 
   if (leftCopy < 0) {
@@ -10,27 +27,33 @@ const clamp = ({ left, top, width /* ,height */ }) => {
     leftCopy = document.documentElement.clientWidth - width;
   }
 
-  // TODO clamp top based on a prop
-
   return { left: leftCopy, top };
 };
 
-function calculatePosition(refContainer, refDropdown, positioning) {
-  const dropdownPosition =
-    refContainer && refContainer.current.getBoundingClientRect();
+function calculatePosition(
+  refContainer: React.RefObject<HTMLDivElement>,
+  refDropdown: React.RefObject<HTMLDivElement>,
+  positioning: Positioning,
+) {
+  const dropdownPosition = refContainer?.current?.getBoundingClientRect() || {
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+  };
   let { left } = dropdownPosition;
   const { top, width, height } = dropdownPosition;
 
   switch (positioning) {
     case "center":
       left += width / 2;
-      left -= refDropdown.current.getBoundingClientRect().width / 2;
+      left -= (refDropdown?.current?.getBoundingClientRect()?.width || 0) / 2;
       break;
     case "left":
       break;
     case "right":
       left += width;
-      left -= refDropdown.current.getBoundingClientRect().width;
+      left -= refDropdown?.current?.getBoundingClientRect()?.width || 0;
       break;
     default:
       throw new Error(`Unknown positioning ${positioning}`);
@@ -39,29 +62,31 @@ function calculatePosition(refContainer, refDropdown, positioning) {
   const clamped = clamp({
     left,
     top,
-    width: refDropdown && refDropdown.current.getBoundingClientRect().width,
-    height: refDropdown && refDropdown.current.getBoundingClientRect().height,
+    width: refDropdown?.current?.getBoundingClientRect().width || 0,
   });
 
   return { left: clamped.left, top: clamped.top + height };
 }
 
 function Dropdown({
-  mode = "hover",
   children,
+  className = "dropdown",
   dropdown,
-  wrapperClass,
-  wrapperId,
-  dropdownWrapperClass,
   dropdownWrapperId,
-  isDropdownCentered,
+  hasClickOutsideListener = true,
+  isOpen = undefined,
+  mode = "hover",
+  positioning = "center",
+  wrapperId,
   zIndex = "auto",
-  hasClickOutsideListener,
-  positioning = isDropdownCentered ? "center" : "left",
-  isOpen,
-  triggerKeys,
   ...props
-}) {
+}: Props) {
+  const [position, setPosition] = React.useState({ left: 0, top: 0 });
+  const [shouldRenderContent, setShouldRenderContent] = React.useState(false);
+  const [isDropdownShown, setIsDropdownShown] = React.useState(false);
+  const refContainer = React.useRef<HTMLDivElement>(null);
+  const refDropdown = React.useRef<HTMLDivElement>(null);
+
   const IS_CONTROLLED = !(typeof isOpen === "undefined" || isOpen === null);
   let modeCopy = mode;
 
@@ -72,25 +97,7 @@ function Dropdown({
     modeCopy = "hover";
   }
 
-  if (isDropdownCentered) {
-    console.warn(
-      "`isDropdownCentered` is deprecated. Use `positioning` set to `center` instead.",
-    );
-  }
-
-  if (triggerKeys) {
-    console.warn(
-      "`triggerKeys` is deprecated. All dropdowns are triggered with either Space or Enter keys when focused",
-    );
-  }
-
-  const [position, setPosition] = useState({ left: 0, top: 0 });
-  const [shouldRenderContent, setShouldRenderContent] = useState(false);
-  const [isDropdownShown, setIsDropdownShown] = useState(false);
-  const refContainer = useRef();
-  const refDropdown = useRef();
-
-  const calculatePositionAndSetState = useCallback(() => {
+  const calculatePositionAndSetState = React.useCallback(() => {
     if (isDropdownShown) {
       const position = calculatePosition(
         refContainer,
@@ -101,7 +108,7 @@ function Dropdown({
     }
   }, [isDropdownShown, positioning]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     window.addEventListener("scroll", calculatePositionAndSetState);
     window.addEventListener("resize", calculatePositionAndSetState);
 
@@ -111,7 +118,7 @@ function Dropdown({
     };
   }, [calculatePositionAndSetState]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (IS_CONTROLLED) {
       if (isOpen) {
         setShouldRenderContent(true);
@@ -121,7 +128,7 @@ function Dropdown({
     }
   }, [IS_CONTROLLED, isOpen]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (shouldRenderContent) {
       const position = calculatePosition(
         refContainer,
@@ -133,12 +140,9 @@ function Dropdown({
     }
   }, [positioning, shouldRenderContent]);
 
-  useEffect(() => {
-    function outsideClickListener(event) {
-      if (
-        refContainer.current &&
-        !refContainer.current.contains(event.target)
-      ) {
+  React.useEffect(() => {
+    function outsideClickListener(event: MouseEvent) {
+      if (!refContainer?.current?.contains(event.target as Node)) {
         setShouldRenderContent(false);
       }
     }
@@ -149,10 +153,10 @@ function Dropdown({
     return () => window.removeEventListener("click", outsideClickListener);
   }, [IS_CONTROLLED, hasClickOutsideListener, positioning]);
 
-  function onKeyDown(event) {
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (mode === "hover") {
       if ([" ", "Enter"].includes(event.key)) {
-        setShouldRenderContent(curr => !curr);
+        setShouldRenderContent((curr) => !curr);
       }
     }
     if (IS_CONTROLLED) {
@@ -179,13 +183,13 @@ function Dropdown({
     return;
   }
 
-  function onClick(event) {
+  function onClick(event: React.MouseEvent) {
     if (IS_CONTROLLED) {
       return;
     }
     if (modeCopy === "click") {
-      if (!refDropdown.current.contains(event.target)) {
-        setShouldRenderContent(curr => !curr);
+      if (!refDropdown?.current?.contains(event.target as Node)) {
+        setShouldRenderContent((curr) => !curr);
       }
     }
     return;
@@ -193,9 +197,9 @@ function Dropdown({
 
   return (
     <div
-      className={wrapperClass}
-      tabIndex={IS_CONTROLLED ? null : 0}
-      role={IS_CONTROLLED ? null : "button"}
+      className={className}
+      tabIndex={IS_CONTROLLED ? undefined : 0}
+      role={IS_CONTROLLED ? undefined : "button"}
       onKeyDown={onKeyDown}
       id={wrapperId}
       ref={refContainer}
@@ -206,16 +210,14 @@ function Dropdown({
     >
       {children}
       <div
-        className={dropdownWrapperClass}
+        className={"dropdown-wrapper"}
         id={dropdownWrapperId}
         ref={refDropdown}
         style={{
           visibility: isDropdownShown ? "visible" : "hidden",
-          position: "fixed",
           top: position.top,
           left: position.left,
           zIndex,
-          display: "flex",
         }}
       >
         {shouldRenderContent ? dropdown : null}
@@ -223,35 +225,5 @@ function Dropdown({
     </div>
   );
 }
-
-Dropdown.propTypes = {
-  mode: PropTypes.string,
-  children: PropTypes.node,
-  dropdown: PropTypes.node,
-  wrapperClass: PropTypes.string,
-  wrapperId: PropTypes.string,
-  dropdownWrapperClass: PropTypes.string,
-  dropdownWrapperId: PropTypes.string,
-  isDropdownCentered: PropTypes.bool,
-  zIndex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  hasClickOutsideListener: PropTypes.bool,
-  positioning: PropTypes.oneOf(["left", "center", "right"]),
-  isOpen: PropTypes.bool,
-};
-
-Dropdown.defaultProps = {
-  mode: "hover",
-  children: null,
-  dropdown: null,
-  wrapperClass: null,
-  wrapperId: null,
-  dropdownWrapperClass: null,
-  dropdownWrapperId: null,
-  isDropdownCentered: null,
-  zIndex: "auto",
-  hasClickOutsideListener: false,
-  positioning: "left",
-  isOpen: null,
-};
 
 export default Dropdown;
