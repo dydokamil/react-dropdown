@@ -44,7 +44,7 @@ or
 
 ## Props
 
-##### `mode`
+##### `mode?: "hover" | "click" = "hover"`
 
 Sets the behavior of the toggling element. Defaults to `hover`. Valid values are:
 
@@ -52,19 +52,19 @@ Sets the behavior of the toggling element. Defaults to `hover`. Valid values are
 
 ---
 
-##### `children`
+##### `children: ReactNode`
 
 A React component responsible for the toggling of the dropdown.
 
 ---
 
-##### `dropdown`
+##### `dropdown: ReactNode`
 
 A React component to be displayed as a dropdown.
 
 ---
 
-##### `positioning`
+##### `positioning?: "center" | "left" | "right" = "left"`
 
 A string prop responsible for the positioning of the menu. Valid values are:
 
@@ -72,43 +72,37 @@ A string prop responsible for the positioning of the menu. Valid values are:
 
 ---
 
-##### `zIndex`
+##### `zIndex?: "auto" | number = "auto"`
 
 A number specifying the z-index of the dropdown. Valid values are numbers.
 
 ---
 
-##### `hasClickOutsideListener`
+##### `hasClickOutsideListener?: boolean = true`
 
 A boolean prop specifying whether the dropdown should be closed when the mouse event is located outside of the entire component. Useful with `click` mode.
 
 ---
 
-##### `wrapperClass`
-
-Class name of the newly created element wrapping the `children` prop.
-
----
-
-##### `wrapperId`
+##### `wrapperId?: string = undefined`
 
 `id` of the newly created element wrapping the `children` prop.
 
 ---
 
-##### `dropdownWrapperClass`
+##### `className?: string = "dropdown"`
 
 Class name of the newly created element wrapping the dropdown.
 
 ---
 
-##### `dropdownWrapperId`
+##### `dropdownWrapperId?: string = undefined`
 
 `id` of the newly created element wrapping the dropdown.
 
 ---
 
-##### `isOpen`
+##### `isOpen?: boolean = undefined`
 
 A boolean prop responsible for the state of the component (closed/open). Valid values are:
 
