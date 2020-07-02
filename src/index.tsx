@@ -73,7 +73,7 @@ function Dropdown({
   className = "dropdown",
   dropdown,
   dropdownWrapperId = undefined,
-  hasClickOutsideListener = true,
+  hasClickOutsideListener = false,
   isOpen = undefined,
   mode = "hover",
   positioning = "left",
