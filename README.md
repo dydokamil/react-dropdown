@@ -1,9 +1,5 @@
 # Links
 
-example: https://github.com/dydokamil/react-dropdown-example
-
-demo: https://dydokamil.github.io/react-dropdown-example/
-
 npm: https://www.npmjs.com/package/react-dropdown-overflow
 
 # Demo
